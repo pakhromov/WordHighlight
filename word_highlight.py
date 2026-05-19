@@ -34,6 +34,8 @@ def plugin_loaded():
 			Pref.highlight_when_selection_is_empty                   = bool(settings.get('highlight_when_selection_is_empty', False))
 			Pref.highlight_word_under_cursor_when_selection_is_empty = bool(settings.get('highlight_word_under_cursor_when_selection_is_empty', False))
 			Pref.highlight_non_word_characters                       = bool(settings.get('highlight_non_word_characters', False))
+			Pref.highlight_on_multiple_selections                    = bool(settings.get('highlight_on_multiple_selections', True))
+			Pref.highlight_on_multiline_selection                    = bool(settings.get('highlight_on_multiline_selection', True))
 			Pref.word_separators                                     = settings_base.get('word_separators')
 			Pref.show_status_bar_message                             = bool(settings.get('show_word_highlight_status_bar_message', True))
 			Pref.status_bar_message_max_len                          = settings.get('show_word_highlight_status_bar_message_length', 200)
@@ -180,6 +182,18 @@ class WordHighlightListener(sublime_plugin.EventListener):
 			view.set_status("WordHighlight", message)
 
 	def highlight_occurences(self, view, forceUpdate=False):
+		if not Pref.highlight_on_multiline_selection and any(view.rowcol(s.begin())[0] != view.rowcol(s.end())[0] for s in view.sel()):
+			view.erase_status("WordHighlight")
+			view.erase_regions("WordHighlight")
+			Pref.prev_regions = None
+			Pref.prev_selections = None
+			return
+		if not Pref.highlight_on_multiple_selections and len(list(view.sel())) > 1:
+			view.erase_status("WordHighlight")
+			view.erase_regions("WordHighlight")
+			Pref.prev_regions = None
+			Pref.prev_selections = None
+			return
 		if not Pref.highlight_when_selection_is_empty and not view.has_non_empty_selection_region():
 			view.erase_status("WordHighlight")
 			view.erase_regions("WordHighlight")

@@ -99,6 +99,14 @@ Under the Packages/WordHighlight sub-directory, edit the `Word Highlight.sublime
 	of your tmTheme and add their own modifications, and if you are using a plugin that
 	does this, your change to the `.tmTheme` file may not be reflected in the UI immediately.
 
+*	`"highlight_on_multiple_selections" : true`
+
+	When set to false, disables highlighting when there are multiple cursors or selections active.
+
+*	`"highlight_on_multiline_selection" : true`
+
+	When set to false, disables highlighting when the selection spans more than one line.
+
 * `"file_size_limit" : 4194304`
 
 	Files bigger than this number will put WordHighlight on mode "highlight around view port" (a portion of the document)
