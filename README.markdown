@@ -55,6 +55,12 @@ Under the Packages/WordHighlight sub-directory, edit the `Word Highlight.sublime
 
 	When the previous option is enabled, this makes the word under the cursor to gain highlighting
 
+*	`"minimum_characters" : 1`
+
+	The minimum number of characters a selection must contain before occurrences are highlighted.
+	Increase this to avoid highlighting noise from short selections. Default value 1 means any
+	non-empty selection triggers highlighting.
+
 *	`"highlight_delay" : 0`
 
 	This delays highlighting all occurrences using given time (in milliseconds) to let users move cursor

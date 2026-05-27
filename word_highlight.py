@@ -42,6 +42,7 @@ def plugin_loaded():
 			Pref.file_size_limit                                     = int(settings.get('file_size_limit', 4194304))
 			Pref.when_file_size_limit_search_this_num_of_characters  = int(settings.get('when_file_size_limit_search_this_num_of_characters', 20000))
 			Pref.timing                                              = time.time()
+			Pref.minimum_characters                                  = int(settings.get('minimum_characters', 1))
 			Pref.enabled                                             = bool(settings.get('enabled', True))
 			Pref.prev_selections                                     = None
 			Pref.prev_regions                                        = None
@@ -223,14 +224,14 @@ class WordHighlightListener(sublime_plugin.EventListener):
 				string = view.substr(view.word(sel)).strip()
 				if string not in processedWords:
 					processedWords.append(string)
-					if string and all([not c in Pref.word_separators for c in string]):
+					if string and len(string) >= Pref.minimum_characters and all([not c in Pref.word_separators for c in string]):
 							regions = self.find_regions(view, regions, string, limited_size)
 					if not Pref.highlight_word_under_cursor_when_selection_is_empty:
 						for s in view.sel():
 							regions = [r for r in regions if not r.contains(s)]
 			elif not sel.empty() and Pref.highlight_non_word_characters:
 				string = view.substr(sel)
-				if string and string not in processedWords:
+				if string and len(string) >= Pref.minimum_characters and string not in processedWords:
 					processedWords.append(string)
 					regions = self.find_regions(view, regions, string, limited_size)
 			elif not sel.empty():
@@ -239,7 +240,7 @@ class WordHighlightListener(sublime_plugin.EventListener):
 					string = view.substr(word).strip()
 					if string not in processedWords:
 						processedWords.append(string)
-						if string and all([not c in Pref.word_separators for c in string]):
+						if string and len(string) >= Pref.minimum_characters and all([not c in Pref.word_separators for c in string]):
 								regions = self.find_regions(view, regions, string, limited_size)
 
 			occurrences = len(regions)-occurrencesCount;
